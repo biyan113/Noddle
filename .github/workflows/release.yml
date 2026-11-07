@@ -1,0 +1,25 @@
+name: Release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: swift test
+      - name: Set version from tag
+        run: /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${GITHUB_REF_NAME#v}" Resources/Info.plist
+      - name: Build (ad hoc signed)
+        run: make app
+      - name: Package
+        run: |
+          ZIP="Noddle-${GITHUB_REF_NAME}-macos-arm64.zip"
+          ditto -c -k --keepParent build/Noddle.app "$ZIP"
+          shasum -a 256 "$ZIP" > "$ZIP.sha256"
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" Noddle-*.zip Noddle-*.zip.sha256 --generate-notes
