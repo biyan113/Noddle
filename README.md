@@ -11,6 +11,17 @@
 - 支持头部追踪的耳机：AirPods 3、AirPods 4、AirPods Pro 全系、AirPods Max
 - 耳机要连在这台 Mac 上，并且声音输出是 AirPods，否则系统不发送运动数据（总览页有切换按钮）
 
+## 下载
+
+在 [Releases](../../releases) 下载 Apple 芯片版本，解压后把 `Noddle.app` 放进“应用程序”。
+发布包使用临时签名，没有经过 Apple 公证，首次打开需要先解除隔离：
+
+```bash
+xattr -dr com.apple.quarantine /Applications/Noddle.app
+```
+
+每次更新后都要重新授予辅助功能权限。
+
 ## 构建
 
 ```bash
